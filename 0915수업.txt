@@ -1,0 +1,431 @@
+SQL> conn user0827/1234
+Connected.
+SQL> show user
+USER is "USER0827"
+SQL> --¼ö¾÷ÁÖÁ¦ : ¿Ü·¡Å° (foreign key)
+SQL> 
+SQL> --»óÇ° ¹üÁÖ Å×ÀÌºí »ý¼º
+SQL> create table category(
+  2  category_id number primary key
+  3  , name varchar(20)
+  4  );
+
+Table created.
+
+SQL> desc category;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CATEGORY_ID                               NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+
+SQL> insert into category(category_id, name) values(1,'»óÀÇ');
+
+1 row created.
+
+SQL> insert into category(category_id, name) values(2,'ÇÏÀÇ');
+
+1 row created.
+
+SQL> insert into category(category_id, name) values(3,'¾×¼¼¼­¸®');
+
+1 row created.
+
+SQL> insert into category(category_id, name) values(4,'½Å¹ß');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * from category
+  2  ;
+
+CATEGORY_ID NAME                                                                
+----------- ----------------------------------------                            
+          1 »óÀÇ                                                                
+          2 ÇÏÀÇ                                                                
+          3 ¾×¼¼¼­¸®                                                            
+          4 ½Å¹ß                                                                
+
+SQL> --¹æ±Ý ¸¸µç Ä«Å×°í¸® Å×ÀÌºíÀ» ÂüÁ¶ÇÏ´Â ÀÚ½Ä Å×ÀÌºíÀ» »ý¼ºÇÑ´Ù
+SQL> create table product(
+  2  product_id number primary key
+  3  , category_id number foreign key references category(category_id)
+  4  , code varchar(20)
+  5  , porduct_name varchar(20)
+  6  , price number default 00)
+  7  );
+, category_id number foreign key references category(category_id)
+                     *
+ERROR at line 3:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create table product(
+  2  product_id number primary key
+  3  , category_id number foreign key references category(category_id)
+  4  , code varchar(20)
+  5  , porduct_name varchar(20)
+  6  , price number default 0
+  7* )
+SQL> /
+, category_id number foreign key references category(category_id)
+                     *
+ERROR at line 3:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create table product(
+  2  product_id number primary key
+  3  , category_id number 
+  4  , foreign key (category_id) references category(category_id)
+  5  , code varchar(20)
+  6  , porduct_name varchar(20)
+  7  , price number default 0
+  8* )
+SQL> /
+
+Table created.
+
+SQL> insert into product(product_id, category_id, code, product_name, price)
+  2  values(1, 1, 'JE5505', 'MetroÃ»¹ÙÁö', 250000);
+insert into product(product_id, category_id, code, product_name, price)
+                                                   *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  insert into product(product_id, category_id, code, porduct_name, price)
+  2* values(1, 1, 'JE5505', 'MetroÃ»¹ÙÁö', 250000)
+SQL> /
+
+1 row created.
+
+SQL> insert into product(product_id, category_id, code, product_name, price)
+  2  values(2, 2, 'JE5506', '½ºÅ°´ÏÃ»¹ÙÁö', 270000);
+insert into product(product_id, category_id, code, product_name, price)
+                                                   *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> ¤§¤·
+SP2-0042: unknown command "¤§¤·" - rest of line ignored.
+SQL> ed
+Wrote file afiedt.buf
+
+  1  insert into product(product_id, category_id, code, porduct_name, price)
+  2* values(2, 2, 'JE5506', '½ºÅ°´ÏÃ»¹ÙÁö', 270000)
+SQL> 
+SQL> /
+
+1 row created.
+
+SQL> set line 200
+SQL> ;
+  1  insert into product(product_id, category_id, code, porduct_name, price)
+  2* values(2, 2, 'JE5506', '½ºÅ°´ÏÃ»¹ÙÁö', 270000)
+SQL> dafdsfdsdad'
+SP2-0734: unknown command beginning "dafdsfdsda..." - rest of line ignored.
+SQL> select * from product;
+
+PRODUCT_ID CATEGORY_ID CODE                                     PORDUCT_NAME                                  PRICE                                                                                     
+---------- ----------- ---------------------------------------- ---------------------------------------- ----------                                                                                     
+         1           1 JE5505                                   MetroÃ»¹ÙÁö                                  250000                                                                                     
+         2           2 JE5506                                   ½ºÅ°´ÏÃ»¹ÙÁö                                 270000                                                                                     
+
+SQL> --foreign key Á¦¾àÁ¶°ÇÀ» ÀÚ½ÄÅ×ÀÌºí¿¡ ºÎ¿©ÇÒ °æ¿ì, ºÎ¸ð´Â ÇÔºÎ·Î µ¥ÀÌÅÍ¸¦ Á¶ÀÛÇÏÁö ¸øÇÑ´Ù
+SQL> update category set category_id=100;
+update category set category_id=100
+*
+ERROR at line 1:
+ORA-00001: unique constraint (USER0827.SYS_C007005) violated 
+
+
+SQL> alter table category
+  2  drop column category_id;
+drop column category_id
+            *
+ERROR at line 2:
+ORA-12992: cannot drop parent key column 
+
+
+SQL> --¿Ü·¡Å° Á¦¾àÁ¶°ÇÀ» °É¾î³õÀ¸¸é, µ¥ÀÌÅÍ ¹«°á¼ºÀ» À¯ÁöÇÏ¸ç ¾ÈÀüÀåÄ¡¸¦ ¸¶·ÃÇÑ´Ù
+SQL> --Á¦¾àÁ¶°ÇÀÇ Á¾·ù
+SQL> --1.unique
+SQL> --2.not null
+SQL> --3.primary key
+SQL> --4.check
+SQL> --5.default
+SQL> --6.default
+SQL> --6.foreign key
+SQL> 
+SQL> --primary key¸¦ »ç¶÷ÀÌ Á÷Á¢ ³ÖÀ¸¸é ¾È‰Î Áßº¹ °¡´É¼ºµµ ÀÖ°í, ¼öÄ¡°ªÀÌ ¸î±îÁö Áõ°¡Çß´ÂÁö
+SQL> --¾Ë¼ö ¾ø´Ù, »ç¿ëÀÚµé¿¡ ÀÇÇØ Áõ°¡ÇØ¼­ ¿¹ÃøºÒ°¡
+SQL> --ÇØ°áÃ¥ ½ÃÄö½º¸¦ ÀÌ¿ëÇÑ´Ù
+SQL> 
+SQL> create sequence seq_category
+  2  increment by 1 --1¾¿ Áõ°¡½ÃÄÑ¶ó
+  3  sratr with 1; --1ºÎÅÍ ½ÃÀÛÇØ¶ó
+  4  
+SQL> ;
+  1  create sequence seq_category
+  2  increment by 1 --1¾¿ Áõ°¡½ÃÄÑ¶ó
+  3* sratr with 1; --1ºÎÅÍ ½ÃÀÛÇØ¶ó
+SQL> /
+sratr with 1; --1ºÎÅÍ ½ÃÀÛÇØ¶ó
+      *
+ERROR at line 3:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create sequence seq_category
+  2  increment by 1 
+  3* sratr with 1 
+SQL> /
+sratr with 1 
+*
+ERROR at line 3:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create sequence seq_category
+  2  increment by 1 
+  3* srart with 1 
+SQL> /
+srart with 1 
+*
+ERROR at line 3:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> conn system/manager
+ERROR:
+ORA-01017: invalid username/password; logon denied 
+
+
+Warning: You are no longer connected to ORACLE.
+SQL> conn system/1234 sysdba
+SP2-0306: Invalid option.
+Usage: CONN[ECT] [{logon|/|proxy} [AS {SYSDBA|SYSOPER|SYSASM}] [edition=value]]
+where <logon> ::= <username>[/<password>][@<connect_identifier>]
+      <proxy> ::= <proxyuser>[<username>][/<password>][@<connect_identifier>]
+SQL> conn system
+ERROR:
+ORA-01017: invalid username/password; logon denied 
+
+
+SQL> show user
+USER is ""
+SQL> conn system/1234
+Connected.
+SQL> grant create sequence to user0827;
+
+Grant succeeded.
+
+SQL> 
+SQL> conn user0827/1234
+Connected.
+SQL> show user
+USER is "USER0827"
+SQL> --¼ýÀÚ°ª¸¸À» Àü´ãÇÏ¿© Áõ°¡½ÃÄÑÁÖ´Â °´Ã¼ÀÎ ½ÃÄö½º »ý¤µ¾î
+SQL> create sequence seq_category
+  2  increment by 1
+  3  start with 1;
+
+Sequence created.
+
+SQL> --½ÃÄö½º¸¦ È£ÃâÇÏ¿©, insert ÇØº¸±â ½Ç½À
+SQL> --±âÁ¸¿¡ µé¾î°£ catefory µ¥ÀÌÅÍ´Â ½ÃÄö½º¸¦ ÀÌ¿ëÇÏÁö ¾Ê¾Ò±â ¶§¹®¿¡ ¹«°á¼ºÀÌ ±úÁøµ¥ÀÌÅÍ´Ù
+SQL> --µû¶ó¼­ ¹ö¸®ÀÚ
+SQL> delete from category
+  2  ;
+delete from category
+*
+ERROR at line 1:
+ORA-02292: integrity constraint (USER0827.SYS_C007007) violated - child record found 
+
+
+SQL> --Á¦¾àÁ¶°ÇÀ» °É¾î³õ¾Æ¼­, ¸¶À½´ë·Î categoryµ¥ÀÌÅÍ¸¦ Áö¿ï¼ö ¾ø´Ù
+SQL> --½ÃÄö½º ½Ç½ÀÀ» productÀ» ´ë»óÀ¸·Î ÇÏÀÚ
+SQL> create sequence seq_product
+  2  increment by 1
+  3  start with 1
+  4  ;
+
+Sequence created.
+
+SQL> --±âÁ¸ Å×½ºÆ®¿ëÀ¸·Î ³Ö¾ú´ø productÀÇ category_id °ªÀ» Áö¿ìÀÚ
+SQL> delete from product;
+
+2 rows deleted.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> --½ÃÄö½º¸¦ ÀÌ¿ëÇÑ µ¥ÀÌÅÍ insert
+SQL> insert into product(porduct_id,category_id,code,product_name,price)
+  2  values(seq_product)/
+  3  ;
+values(seq_product)/
+*
+ERROR at line 2:
+ORA-00947: not enough values 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  insert into product(product_id,category_id,code,product_name,price)
+  2* values(seq_product. nextnal, 1, 'JE0007','ìŠ¤í‚¤ë‹ˆì²­ë°”ì§€',30000)
+SQL> /
+values(seq_product. nextnal, 1, 'JE0007','ìŠ¤í‚¤ë‹ˆì²­ë°”ì§€',30000)
+                    *
+ERROR at line 2:
+ORA-00984: column not allowed here 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1* insert into product(product_id,category_id,code,product_name,price)
+  2  values(seq-product. nextnal, 1, 'je0007','½ºÅ°´ÏÃ»¹ÙÁö',30000);
+values(seq-product. nextnal, 1, 'je0007','½ºÅ°´ÏÃ»¹ÙÁö',30000)
+                    *
+ERROR at line 2:
+ORA-00984: column not allowed here 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1* insert into product(product_id,category_id,code,product_name,price)
+  2  values(seq-product. nextval, 1, 'je0007','½ºÅ°´ÏÃ»¹ÙÁö',30000);
+values(seq-product. nextval, 1, 'je0007','½ºÅ°´ÏÃ»¹ÙÁö',30000)
+           *
+ERROR at line 2:
+ORA-02289: sequence does not exist 
+
+
+SQL> insert into product(product_id,category_id,code,product_name,price)
+  2  values(seq_product.nextval,1,'JE0007','½ºÅ°´ÏÃ»¹ÙÁö',30000);
+insert into product(product_id,category_id,code,product_name,price)
+                                                *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> select product_id, product_name from product;
+select product_id, product_name from product
+                   *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> select product_id, porduct_name from product;
+
+no rows selected
+
+SQL> insert into product(product_id,category_id,code,product_name,price)
+  2  values(seq_product.nextval,1,'JE0007','½ºÅ°´ÏÃ»¹ÙÁö',30000);
+insert into product(product_id,category_id,code,product_name,price)
+                                                *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> insert into product(product_id,category_id,code,porduct_name,price)
+  2  values(seq_product.nextval,1,'JE0007','½ºÅ°´ÏÃ»¹ÙÁö',30000);
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> 
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> /
+
+1 row created.
+
+SQL> select product_id, product_name from product;
+select product_id, product_name from product
+                   *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> /
+select product_id, product_name from product
+                   *
+ERROR at line 1:
+ORA-00904: "PRODUCT_NAME": invalid identifier 
+
+
+SQL> select product_id, porduct_name from product;
+
+PRODUCT_ID PORDUCT_NAME                                                                                                                                                                                 
+---------- ----------------------------------------                                                                                                                                                     
+         1 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         2 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         3 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         4 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         5 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         6 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         7 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         8 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+         9 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+        10 ½ºÅ°´ÏÃ»¹ÙÁö                                                                                                                                                                                 
+
+10 rows selected.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> spool off
