@@ -1,0 +1,574 @@
+SQL> --정규화란? 데이터의 무결성을 위해 데이터베이스 설계시, 중복된 데이터를 제거하자는 원칙
+SQL> --조인(join) : 정규화에 의해 물리적으로 분리된 테이블을 다시 하나처럼 보여줄수 있는
+SQL> --select 기법
+SQL> --우리가 사용해왔던 EMP사실 부모테이블인 dept를 참고하고 있었다
+SQL> set line 200
+SQL> set pagesize 50
+SQL> select * from emp
+  2  ;
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO                                                                                                 
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ----------                                                                                                 
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20                                                                                                 
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30                                                                                                 
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30                                                                                                 
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20                                                                                                 
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30                                                                                                 
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30                                                                                                 
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10                                                                                                 
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20                                                                                                 
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10                                                                                                 
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30                                                                                                 
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20                                                                                                 
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30                                                                                                 
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20                                                                                                 
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10                                                                                                 
+
+14 rows selected.
+
+SQL> --부서번호만으로는, 부서에 대한 정보를 알수 없다.
+SQL> --따라서 부서테이블의 정보와 현재 emp 테이블을 합쳐서 보여주자 (join)
+SQL> select *
+  2  from ;
+from 
+    *
+ERROR at line 2:
+ORA-00903: invalid table name 
+
+
+SQL> --부서테이블 가져오기
+SQL> select * from dept;
+
+    DEPTNO DNAME                        LOC                                                                                                                                                             
+---------- ---------------------------- --------------------------                                                                                                                                      
+        10 ACCOUNTING                   NEW YORK                                                                                                                                                        
+        20 RESEARCH                     DALLAS                                                                                                                                                          
+        30 SALES                        CHICAGO                                                                                                                                                         
+        40 OPERATIONS                   BOSTON                                                                                                                                                          
+
+SQL> 
+SQL> -- emp, dept 합치기
+SQL> select *
+  2  from emp , dept;
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO     DEPTNO DNAME                        LOC                                                     
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ---------- ---------- ---------------------------- --------------------------                              
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20         10 ACCOUNTING                   NEW YORK                                                
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30         10 ACCOUNTING                   NEW YORK                                                
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30         10 ACCOUNTING                   NEW YORK                                                
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20         10 ACCOUNTING                   NEW YORK                                                
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30         10 ACCOUNTING                   NEW YORK                                                
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30         10 ACCOUNTING                   NEW YORK                                                
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10         10 ACCOUNTING                   NEW YORK                                                
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20         10 ACCOUNTING                   NEW YORK                                                
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10         10 ACCOUNTING                   NEW YORK                                                
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30         10 ACCOUNTING                   NEW YORK                                                
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20         10 ACCOUNTING                   NEW YORK                                                
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30         10 ACCOUNTING                   NEW YORK                                                
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20         10 ACCOUNTING                   NEW YORK                                                
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10         10 ACCOUNTING                   NEW YORK                                                
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20         20 RESEARCH                     DALLAS                                                  
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30         20 RESEARCH                     DALLAS                                                  
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30         20 RESEARCH                     DALLAS                                                  
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20         20 RESEARCH                     DALLAS                                                  
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30         20 RESEARCH                     DALLAS                                                  
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30         20 RESEARCH                     DALLAS                                                  
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10         20 RESEARCH                     DALLAS                                                  
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20         20 RESEARCH                     DALLAS                                                  
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10         20 RESEARCH                     DALLAS                                                  
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30         20 RESEARCH                     DALLAS                                                  
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20         20 RESEARCH                     DALLAS                                                  
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30         20 RESEARCH                     DALLAS                                                  
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20         20 RESEARCH                     DALLAS                                                  
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10         20 RESEARCH                     DALLAS                                                  
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20         30 SALES                        CHICAGO                                                 
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30         30 SALES                        CHICAGO                                                 
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30         30 SALES                        CHICAGO                                                 
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20         30 SALES                        CHICAGO                                                 
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30         30 SALES                        CHICAGO                                                 
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30         30 SALES                        CHICAGO                                                 
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10         30 SALES                        CHICAGO                                                 
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20         30 SALES                        CHICAGO                                                 
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10         30 SALES                        CHICAGO                                                 
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30         30 SALES                        CHICAGO                                                 
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20         30 SALES                        CHICAGO                                                 
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30         30 SALES                        CHICAGO                                                 
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20         30 SALES                        CHICAGO                                                 
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10         30 SALES                        CHICAGO                                                 
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20         40 OPERATIONS                   BOSTON                                                  
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30         40 OPERATIONS                   BOSTON                                                  
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30         40 OPERATIONS                   BOSTON                                                  
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20         40 OPERATIONS                   BOSTON                                                  
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30         40 OPERATIONS                   BOSTON                                                  
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO     DEPTNO DNAME                        LOC                                                     
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ---------- ---------- ---------------------------- --------------------------                              
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30         40 OPERATIONS                   BOSTON                                                  
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10         40 OPERATIONS                   BOSTON                                                  
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20         40 OPERATIONS                   BOSTON                                                  
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10         40 OPERATIONS                   BOSTON                                                  
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30         40 OPERATIONS                   BOSTON                                                  
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20         40 OPERATIONS                   BOSTON                                                  
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30         40 OPERATIONS                   BOSTON                                                  
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20         40 OPERATIONS                   BOSTON                                                  
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10         40 OPERATIONS                   BOSTON                                                  
+
+56 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select *
+  2  from emp , dept
+  3* where emp.deptno=deptno
+SQL> /
+where emp.deptno=deptno
+                 *
+ERROR at line 3:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select *
+  2  from emp , dept
+  3* where emp.deptno=deptno.deptno
+SQL> /
+where emp.deptno=deptno.deptno
+                 *
+ERROR at line 3:
+ORA-00904: "DEPTNO"."DEPTNO": invalid identifier 
+
+
+SQL> ws
+SP2-0042: unknown command "ws" - rest of line ignored.
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select *
+  2  from emp , dept
+  3* where emp.deptno=dept.deptno
+SQL> /
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO     DEPTNO DNAME                        LOC                                                     
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ---------- ---------- ---------------------------- --------------------------                              
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20         20 RESEARCH                     DALLAS                                                  
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30         30 SALES                        CHICAGO                                                 
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30         30 SALES                        CHICAGO                                                 
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20         20 RESEARCH                     DALLAS                                                  
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30         30 SALES                        CHICAGO                                                 
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30         30 SALES                        CHICAGO                                                 
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10         10 ACCOUNTING                   NEW YORK                                                
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20         20 RESEARCH                     DALLAS                                                  
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10         10 ACCOUNTING                   NEW YORK                                                
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30         30 SALES                        CHICAGO                                                 
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20         20 RESEARCH                     DALLAS                                                  
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30         30 SALES                        CHICAGO                                                 
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20         20 RESEARCH                     DALLAS                                                  
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10         10 ACCOUNTING                   NEW YORK                                                
+
+14 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, sal, dname, loc
+  2  from emp , dept
+  3* where emp.deptno=dept.deptno
+SQL> /
+
+ENAME                       SAL DNAME                        LOC                                                                                                                                        
+-------------------- ---------- ---------------------------- --------------------------                                                                                                                 
+SMITH                       800 RESEARCH                     DALLAS                                                                                                                                     
+ALLEN                      1600 SALES                        CHICAGO                                                                                                                                    
+WARD                       1250 SALES                        CHICAGO                                                                                                                                    
+JONES                      2975 RESEARCH                     DALLAS                                                                                                                                     
+MARTIN                     1250 SALES                        CHICAGO                                                                                                                                    
+BLAKE                      2850 SALES                        CHICAGO                                                                                                                                    
+CLARK                      2450 ACCOUNTING                   NEW YORK                                                                                                                                   
+SCOTT                      3000 RESEARCH                     DALLAS                                                                                                                                     
+KING                       5000 ACCOUNTING                   NEW YORK                                                                                                                                   
+TURNER                     1500 SALES                        CHICAGO                                                                                                                                    
+ADAMS                      1100 RESEARCH                     DALLAS                                                                                                                                     
+JAMES                       950 SALES                        CHICAGO                                                                                                                                    
+FORD                       3000 RESEARCH                     DALLAS                                                                                                                                     
+MILLER                     1300 ACCOUNTING                   NEW YORK                                                                                                                                   
+
+14 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, sal, dname, loc
+  2  from emp e , dept d
+  3* where e.deptno=d.deptno
+SQL> /
+
+ENAME                       SAL DNAME                        LOC                                                                                                                                        
+-------------------- ---------- ---------------------------- --------------------------                                                                                                                 
+SMITH                       800 RESEARCH                     DALLAS                                                                                                                                     
+ALLEN                      1600 SALES                        CHICAGO                                                                                                                                    
+WARD                       1250 SALES                        CHICAGO                                                                                                                                    
+JONES                      2975 RESEARCH                     DALLAS                                                                                                                                     
+MARTIN                     1250 SALES                        CHICAGO                                                                                                                                    
+BLAKE                      2850 SALES                        CHICAGO                                                                                                                                    
+CLARK                      2450 ACCOUNTING                   NEW YORK                                                                                                                                   
+SCOTT                      3000 RESEARCH                     DALLAS                                                                                                                                     
+KING                       5000 ACCOUNTING                   NEW YORK                                                                                                                                   
+TURNER                     1500 SALES                        CHICAGO                                                                                                                                    
+ADAMS                      1100 RESEARCH                     DALLAS                                                                                                                                     
+JAMES                       950 SALES                        CHICAGO                                                                                                                                    
+FORD                       3000 RESEARCH                     DALLAS                                                                                                                                     
+MILLER                     1300 ACCOUNTING                   NEW YORK                                                                                                                                   
+
+14 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select deptno,ename, sal, dname, loc
+  2  from emp e , dept d
+  3* where e.deptno=d.deptno
+SQL> /
+select deptno,ename, sal, dname, loc
+       *
+ERROR at line 1:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select e.deptno,ename, sal, dname, loc
+  2  from emp e , dept d
+  3* where e.deptno=d.deptno
+SQL> /
+
+    DEPTNO ENAME                       SAL DNAME                        LOC                                                                                                                             
+---------- -------------------- ---------- ---------------------------- --------------------------                                                                                                      
+        20 SMITH                       800 RESEARCH                     DALLAS                                                                                                                          
+        30 ALLEN                      1600 SALES                        CHICAGO                                                                                                                         
+        30 WARD                       1250 SALES                        CHICAGO                                                                                                                         
+        20 JONES                      2975 RESEARCH                     DALLAS                                                                                                                          
+        30 MARTIN                     1250 SALES                        CHICAGO                                                                                                                         
+        30 BLAKE                      2850 SALES                        CHICAGO                                                                                                                         
+        10 CLARK                      2450 ACCOUNTING                   NEW YORK                                                                                                                        
+        20 SCOTT                      3000 RESEARCH                     DALLAS                                                                                                                          
+        10 KING                       5000 ACCOUNTING                   NEW YORK                                                                                                                        
+        30 TURNER                     1500 SALES                        CHICAGO                                                                                                                         
+        20 ADAMS                      1100 RESEARCH                     DALLAS                                                                                                                          
+        30 JAMES                       950 SALES                        CHICAGO                                                                                                                         
+        20 FORD                       3000 RESEARCH                     DALLAS                                                                                                                          
+        10 MILLER                     1300 ACCOUNTING                   NEW YORK                                                                                                                        
+
+14 rows selected.
+
+SQL> --조인할때, 양쪽 테이블에 있는 컬럼은 중복된 이름으로 생각하므로
+SQL> --반드시 컬럼의 소속관계를 명시해야 한다..
+SQL> 
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3* where e.deptno=d.deptno
+SQL> /
+
+ENAME                DNAME                                                                                                                                                                              
+-------------------- ----------------------------                                                                                                                                                       
+SMITH                RESEARCH                                                                                                                                                                           
+ALLEN                SALES                                                                                                                                                                              
+WARD                 SALES                                                                                                                                                                              
+JONES                RESEARCH                                                                                                                                                                           
+MARTIN               SALES                                                                                                                                                                              
+BLAKE                SALES                                                                                                                                                                              
+CLARK                ACCOUNTING                                                                                                                                                                         
+SCOTT                RESEARCH                                                                                                                                                                           
+KING                 ACCOUNTING                                                                                                                                                                         
+TURNER               SALES                                                                                                                                                                              
+ADAMS                RESEARCH                                                                                                                                                                           
+JAMES                SALES                                                                                                                                                                              
+FORD                 RESEARCH                                                                                                                                                                           
+MILLER               ACCOUNTING                                                                                                                                                                         
+
+14 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4  dname=(select deptno from emp where sal=(
+  5  select min(sal) from emp
+  6* ))
+SQL> /
+dname=(select deptno from emp where sal=(
+*
+ERROR at line 4:
+ORA-01722: invalid number 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4  deptno=(select deptno from emp where sal=(
+  5  select min(sal) from emp
+  6* ))
+SQL> /
+deptno=(select deptno from emp where sal=(
+*
+ERROR at line 4:
+ORA-00918: column ambiguously defined 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4  e.deptno=(select deptno from emp where sal=(
+  5  select min(sal) from emp
+  6* ))
+SQL> /
+
+ENAME                DNAME                                                                                                                                                                              
+-------------------- ----------------------------                                                                                                                                                       
+SMITH                RESEARCH                                                                                                                                                                           
+JONES                RESEARCH                                                                                                                                                                           
+SCOTT                RESEARCH                                                                                                                                                                           
+ADAMS                RESEARCH                                                                                                                                                                           
+FORD                 RESEARCH                                                                                                                                                                           
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4  d.deptno=(select loc from dept
+  5* where loc=CHICAGO)
+SQL> /
+where loc=CHICAGO)
+          *
+ERROR at line 5:
+ORA-00904: "CHICAGO": invalid identifier 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4  d.deptno=(select loc from dept
+  5* where loc="CHICAGO")
+SQL> /
+where loc="CHICAGO")
+          *
+ERROR at line 5:
+ORA-00904: "CHICAGO": invalid identifier 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4  d.deptno=(select loc from dept
+  5* where loc='CHICAGO')
+SQL> /
+d.deptno=(select loc from dept
+                 *
+ERROR at line 4:
+ORA-01722: invalid number 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname
+  2  from emp e,dept d
+  3  where e.deptno=d.deptno and
+  4* loc='CHICAGO'
+SQL> /
+
+ENAME                DNAME                                                                                                                                                                              
+-------------------- ----------------------------                                                                                                                                                       
+ALLEN                SALES                                                                                                                                                                              
+WARD                 SALES                                                                                                                                                                              
+MARTIN               SALES                                                                                                                                                                              
+BLAKE                SALES                                                                                                                                                                              
+TURNER               SALES                                                                                                                                                                              
+JAMES                SALES                                                                                                                                                                              
+
+6 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select dname, ename
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* hiredate>ALLEN 
+SQL> /
+hiredate>ALLEN 
+         *
+ERROR at line 4:
+ORA-00904: "ALLEN": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  select dname, ename
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* hiredate < 'ALLEN'
+SQL> /
+hiredate < 'ALLEN'
+           *
+ERROR at line 4:
+ORA-01841: (full) year must be between -4713 and +9999, and not be 0 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select dname, ename
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* hiredate < (select hiredate from emp where ename='ALLEN')
+SQL> /
+
+DNAME                        ENAME                                                                                                                                                                      
+---------------------------- --------------------                                                                                                                                                       
+RESEARCH                     SMITH                                                                                                                                                                      
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname, sal
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* name like m 
+SQL> /
+name like m 
+          *
+ERROR at line 4:
+ORA-00904: "M": invalid identifier 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname, sal
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* name like 'm' 
+SQL> /
+name like 'm' 
+*
+ERROR at line 4:
+ORA-00904: "NAME": invalid identifier 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname, sal
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* ename like 'm' 
+SQL> /
+
+no rows selected
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname, sal
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* ename like 'M' 
+SQL> /
+
+no rows selected
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, dname, sal
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* ename like '%M%' 
+SQL> /
+
+ENAME                DNAME                               SAL                                                                                                                                            
+-------------------- ---------------------------- ----------                                                                                                                                            
+SMITH                RESEARCH                            800                                                                                                                                            
+MARTIN               SALES                              1250                                                                                                                                            
+ADAMS                RESEARCH                           1100                                                                                                                                            
+JAMES                SALES                               950                                                                                                                                            
+MILLER               ACCOUNTING                         1300                                                                                                                                            
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select dname, ename, hiredate
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* hiredate < (select hiredate from emp) 
+SQL> /
+hiredate < (select hiredate from emp) 
+            *
+ERROR at line 4:
+ORA-01427: single-row subquery returns more than one row 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select dname, ename, hiredate
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4  hiredate = (
+  5  select min(hiredate) from emp
+  6* ) 
+SQL> /
+
+DNAME                        ENAME                HIREDATE                                                                                                                                              
+---------------------------- -------------------- --------                                                                                                                                              
+RESEARCH                     SMITH                80/12/17                                                                                                                                              
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename,sal, ename,loc
+  2  from emp e, dept d
+  3  where e.deptno=d.deptno and
+  4* comm is null
+SQL> /
+
+ENAME                       SAL ENAME                LOC                                                                                                                                                
+-------------------- ---------- -------------------- --------------------------                                                                                                                         
+SMITH                       800 SMITH                DALLAS                                                                                                                                             
+JONES                      2975 JONES                DALLAS                                                                                                                                             
+BLAKE                      2850 BLAKE                CHICAGO                                                                                                                                            
+CLARK                      2450 CLARK                NEW YORK                                                                                                                                           
+SCOTT                      3000 SCOTT                DALLAS                                                                                                                                             
+KING                       5000 KING                 NEW YORK                                                                                                                                           
+ADAMS                      1100 ADAMS                DALLAS                                                                                                                                             
+JAMES                       950 JAMES                CHICAGO                                                                                                                                            
+FORD                       3000 FORD                 DALLAS                                                                                                                                             
+MILLER                     1300 MILLER               NEW YORK                                                                                                                                           
+
+10 rows selected.
+
+SQL> spool off
