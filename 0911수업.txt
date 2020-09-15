@@ -1,0 +1,681 @@
+SQL> --테이블 복사하기
+SQL> create table member
+  2  as
+  3  select ename, sal, hiredate, deptno from emp;
+
+Table created.
+
+SQL> select * from member;
+
+ENAME                       SAL HIREDATE     DEPTNO                             
+-------------------- ---------- -------- ----------                             
+SMITH                       800 80/12/17         20                             
+ALLEN                      1600 81/02/20         30                             
+WARD                       1250 81/02/22         30                             
+JONES                      2975 81/04/02         20                             
+MARTIN                     1250 81/09/28         30                             
+BLAKE                      2850 81/05/01         30                             
+CLARK                      2450 81/06/09         10                             
+SCOTT                      3000 87/04/19         20                             
+KING                       5000 81/11/17         10                             
+TURNER                     1500 81/09/08         30                             
+ADAMS                      1100 87/05/23         20                             
+
+ENAME                       SAL HIREDATE     DEPTNO                             
+-------------------- ---------- -------- ----------                             
+JAMES                       950 81/12/03         30                             
+FORD                       3000 81/12/03         20                             
+MILLER                     1300 82/01/23         10                             
+
+14 rows selected.
+
+SQL> --BLAKE를 지우고 싶다?
+SQL> --알맞은 조건을 이용하자
+SQL> delete from member where ename='BLAKE';
+
+1 row deleted.
+
+SQL> --현재까지의 트랜잭션의 세부업무는 1개이다..
+SQL> commit;
+
+Commit complete.
+
+SQL> --기존 트랜잭션은 마무리되고, 새로운 트랜잭션 시작됨...
+SQL> select * from member;
+
+ENAME                       SAL HIREDATE     DEPTNO                             
+-------------------- ---------- -------- ----------                             
+SMITH                       800 80/12/17         20                             
+ALLEN                      1600 81/02/20         30                             
+WARD                       1250 81/02/22         30                             
+JONES                      2975 81/04/02         20                             
+MARTIN                     1250 81/09/28         30                             
+CLARK                      2450 81/06/09         10                             
+SCOTT                      3000 87/04/19         20                             
+KING                       5000 81/11/17         10                             
+TURNER                     1500 81/09/08         30                             
+ADAMS                      1100 87/05/23         20                             
+JAMES                       950 81/12/03         30                             
+
+ENAME                       SAL HIREDATE     DEPTNO                             
+-------------------- ---------- -------- ----------                             
+FORD                       3000 81/12/03         20                             
+MILLER                     1300 82/01/23         10                             
+
+13 rows selected.
+
+SQL> --이름 컬럼의 존재를 없애버리자 (테이블의 구조 변경)
+SQL> --DDL ( ALTER)
+SQL> alter table member
+  2  drop column ename;
+
+Table altered.
+
+SQL> select * from member;
+
+       SAL HIREDATE     DEPTNO                                                  
+---------- -------- ----------                                                  
+       800 80/12/17         20                                                  
+      1600 81/02/20         30                                                  
+      1250 81/02/22         30                                                  
+      2975 81/04/02         20                                                  
+      1250 81/09/28         30                                                  
+      2450 81/06/09         10                                                  
+      3000 87/04/19         20                                                  
+      5000 81/11/17         10                                                  
+      1500 81/09/08         30                                                  
+      1100 87/05/23         20                                                  
+       950 81/12/03         30                                                  
+
+       SAL HIREDATE     DEPTNO                                                  
+---------- -------- ----------                                                  
+      3000 81/12/03         20                                                  
+      1300 82/01/23         10                                                  
+
+13 rows selected.
+
+SQL> delete from member where sla=2450;
+delete from member where sla=2450
+                         *
+ERROR at line 1:
+ORA-00904: "SLA": invalid identifier 
+
+
+SQL> delete from member where sal=2450;
+
+1 row deleted.
+
+SQL> select * from member;
+
+       SAL HIREDATE     DEPTNO                                                  
+---------- -------- ----------                                                  
+       800 80/12/17         20                                                  
+      1600 81/02/20         30                                                  
+      1250 81/02/22         30                                                  
+      2975 81/04/02         20                                                  
+      1250 81/09/28         30                                                  
+      3000 87/04/19         20                                                  
+      5000 81/11/17         10                                                  
+      1500 81/09/08         30                                                  
+      1100 87/05/23         20                                                  
+       950 81/12/03         30                                                  
+      3000 81/12/03         20                                                  
+
+       SAL HIREDATE     DEPTNO                                                  
+---------- -------- ----------                                                  
+      1300 82/01/23         10                                                  
+
+12 rows selected.
+
+SQL> --급여 컬럼 삭제
+SQL> alter table member
+  2  drop column sal;
+
+Table altered.
+
+SQL> select * from member;
+
+HIREDATE     DEPTNO                                                             
+-------- ----------                                                             
+80/12/17         20                                                             
+81/02/20         30                                                             
+81/02/22         30                                                             
+81/04/02         20                                                             
+81/09/28         30                                                             
+87/04/19         20                                                             
+81/11/17         10                                                             
+81/09/08         30                                                             
+87/05/23         20                                                             
+81/12/03         30                                                             
+81/12/03         20                                                             
+
+HIREDATE     DEPTNO                                                             
+-------- ----------                                                             
+82/01/23         10                                                             
+
+12 rows selected.
+
+SQL> --날짜로 지우기
+SQL> delete from member where hiredate='81/04/02';
+
+1 row deleted.
+
+SQL> select * from memeber;
+select * from memeber
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> select * from member;
+
+HIREDATE     DEPTNO                                                             
+-------- ----------                                                             
+80/12/17         20                                                             
+81/02/20         30                                                             
+81/02/22         30                                                             
+81/09/28         30                                                             
+87/04/19         20                                                             
+81/11/17         10                                                             
+81/09/08         30                                                             
+87/05/23         20                                                             
+81/12/03         30                                                             
+81/12/03         20                                                             
+82/01/23         10                                                             
+
+11 rows selected.
+
+SQL> --입사일 삭제
+SQL> alter table member
+  2  drop column hiredate;
+
+Table altered.
+
+SQL> --수업의 의도 : 조건이 될 수 있는 컬럼을 없애는 시나이로
+SQL> select * from member;
+
+    DEPTNO                                                                      
+----------                                                                      
+        20                                                                      
+        30                                                                      
+        30                                                                      
+        30                                                                      
+        20                                                                      
+        10                                                                      
+        30                                                                      
+        20                                                                      
+        30                                                                      
+        20                                                                      
+        10                                                                      
+
+11 rows selected.
+
+SQL> delete from member where deptno=30;
+
+5 rows deleted.
+
+SQL> select * from member;
+
+    DEPTNO                                                                      
+----------                                                                      
+        20                                                                      
+        20                                                                      
+        10                                                                      
+        20                                                                      
+        20                                                                      
+        10                                                                      
+
+6 rows selected.
+
+SQL> --앞으로 테이블 생성할때, 반드시 무조건 존재시켜야 하는 컬럼이 있다...
+SQL> --테이블 정의시 데이터의 결점을 두지 않기 위한 방법 = 즉 무결성
+SQL> --즉 테이블에 올바른 데이터를 받아들이기 위해, 테이블 정의시
+SQL> --개발자는 많은 제약사항을 둘수 있다... 제한이 많을 수록 데이터는 정제된다
+SQL> --제약조건 (Constratin Condition)
+SQL> --(1) 주민번호와 같이 유일한 데이터만 받아들일 수 있도록 컬럼 정의시 제한하기
+SQL> drop table member;
+
+Table dropped.
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> --DDL 은 rollback 대상이 아니다, 즉 DML만 트랜잭션의 대상이 된다.
+SQL> create table member(
+  2  name varchar(20)
+  3  , age number
+  4  );
+
+Table created.
+
+SQL> --레코드를 보고자 함이 아닌, 내가만든 테이블의 구조를 보려면?
+SQL> --테이블을 설명해달라는 명령어 describe
+SQL> desc member;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER
+
+SQL> --내용이 아닌 구조를 본다
+SQL> insert into member(name, age)values('배트맨',36);
+
+1 row created.
+
+SQL> select * from member;
+
+NAME                                            AGE                             
+---------------------------------------- ----------                             
+배트맨                                           36                             
+
+SQL> insert into member(name, age)values('앤트맨',40);
+
+1 row created.
+
+SQL> select * from member;
+
+NAME                                            AGE                             
+---------------------------------------- ----------                             
+배트맨                                           36                             
+앤트맨                                           40                             
+
+SQL> insert into member(name, age)values('배트맨',36);
+
+1 row created.
+
+SQL> select * from member;
+
+NAME                                            AGE                             
+---------------------------------------- ----------                             
+배트맨                                           36                             
+앤트맨                                           40                             
+배트맨                                           36                             
+
+SQL> --과연 첫번째 배트맨을 지울 수 있을까? 정답 : 없다!
+SQL> --해결책 ? 테이블 생성시 무조건 레코드와 레코드를 구분할 컬럼이 필요..
+SQL> --		마치 한국에서의 주민번호 역할과 같은 컬럼의 존재가 필요..
+SQL> drop table member;
+
+Table dropped.
+
+SQL> create table member(
+  2  member_idx number unique
+  3  , name varchar(20)
+  4  , age number
+  5  );
+
+Table created.
+
+SQL> --member_idx 라는 컬럼에 제한을 가한 상태라서, 유일한 데이터만 받아들임
+SQL> insert into member(member_idx, name, age)
+  2  values(1, '배트맨',36);
+
+1 row created.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+
+SQL> insert into member(member_idx, name, age)
+  2  values(1,'수퍼맨',40);
+insert into member(member_idx, name, age)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (USER0827.SYS_C006999) violated 
+
+
+SQL> --위에서 중복된 데이터를 넣으면 제약사항에 위배되어 데이터 insert 불가
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+
+SQL> --올바르고 결점이 없는 데이터를 받아들이기 위해서는 컬럼 정의시
+SQL> --제약조건을 부여할 수 있다..
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+
+SQL> insert into member (member_idx, name, age) values(2,'superman', 39);
+
+1 row created.
+
+SQL> insert into member (member_idx, name, age) values(2,'xman', 28);
+insert into member (member_idx, name, age) values(2,'xman', 28)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (USER0827.SYS_C006999) violated 
+
+
+SQL> insert into member (member_idx, name, age) values(3,'xman', 28);
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+         2 superman                                         39                  
+         3 xman                                             28                  
+
+SQL> insert into member (member_idx, name, age) values(4,'배트맨', 36);
+
+1 row created.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+         2 superman                                         39                  
+         3 xman                                             28                  
+         4 배트맨                                           36                  
+
+SQL> --unique는 유일한 데이터에 대해서는 무결성을 보장할 수 있지만,
+SQL> --null값을 허용해 버리고 만다...
+SQL> insert into member (name, age) values('배트맨', 36);
+
+1 row created.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+         2 superman                                         39                  
+         3 xman                                             28                  
+         4 배트맨                                           36                  
+           배트맨                                           36                  
+
+SQL> insert into member (name, age) values('배트맨', 36);
+
+1 row created.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE                  
+---------- ---------------------------------------- ----------                  
+         1 배트맨                                           36                  
+         2 superman                                         39                  
+         3 xman                                             28                  
+         4 배트맨                                           36                  
+           배트맨                                           36                  
+           배트맨                                           36                  
+
+6 rows selected.
+
+SQL> --우리의 경우 두사람 이상이 member_idx 값이 null이므로, 원하는 레코드를 제어할 수 없다.
+SQL> --해결책? 바로 null을 호용하지 않는 제약조건을 추가!!
+SQL> drop table member;
+
+Table dropped.
+
+SQL> --이번에는 unique 와 null을 허용하지 않는 not null 제약조건을 부여해본다.
+SQL> create table member(
+  2  member_idx number unique not null
+  3  , name varchar(20)
+  4  , age number
+  5  );
+
+Table created.
+
+SQL> desc member;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ MEMBER_IDX                                NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER
+
+SQL> insert into member(name, age) values('batman',39);
+insert into member(name, age) values('batman',39)
+*
+ERROR at line 1:
+ORA-01400: cannot insert NULL into ("USER0827"."MEMBER"."MEMBER_IDX") 
+
+
+SQL> -- 결론) null을 허용하지 않는다 !!!
+SQL> -- 현재까지 배운 제약조건 2개 unique, not null
+SQL> -- 테이블의 데이터 구분시 사용되는 컬럼마다 2개의 제약조건을 주는건 넘 불편
+SQL> -- 따라서 제약조건 중 unique
+SQL> --+ not null합쳐놓은 제약조건을 지원해준다 (모든 DBMS 지원)
+SQL> --ANSI 표준이다
+SQL> --primary key 제약조건 (unique + not null)
+SQL> drop table member;
+
+Table dropped.
+
+SQL> create table member(
+  2  member_idx number primary key
+  3  , name varchar(20)
+  4  , age number
+  5  );
+
+Table created.
+
+SQL> desc member;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ MEMBER_IDX                                NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER
+
+SQL> --제약조건의 종류
+SQL> --1) unique
+SQL> --2) not null
+SQL> --3) primary key ( unique+not null)
+SQL> --4) default (기본값 적용시 사용 )
+SQL> --5) check (값의 범위를 제한)
+SQL> --6) foreign key (조인된 사용되는 외래키 제약조건)
+SQL> drop table member;
+
+Table dropped.
+
+SQL> create table member(
+  2  member_idx number primary key
+  3  , name varchar(20)
+  4  , age number
+  5  , regdate date default sysdate --기본값으로 들어있게 처리...
+  6  , point number default 500
+  7  );
+
+Table created.
+
+SQL> desc member;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ MEMBER_IDX                                NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER
+ REGDATE                                            DATE
+ POINT                                              NUMBER
+
+SQL> --regdate, point에 해당하는 데이터는 우리가 넣을 필요없고,
+SQL> --시스템에 의해 자동으로 입력된다.
+SQL> insert into member(member_idx, name, age) values(1,'batman', 37);
+
+1 row created.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE REGDATE          
+---------- ---------------------------------------- ---------- --------         
+     POINT                                                                      
+----------                                                                      
+         1 batman                                           37 20/09/11         
+       500                                                                      
+                                                                                
+
+SQL> set line 200
+SQL> /
+
+MEMBER_IDX NAME                                            AGE REGDATE       POINT                                                                                                                      
+---------- ---------------------------------------- ---------- -------- ----------                                                                                                                      
+         1 batman                                           37 20/09/11        500                                                                                                                      
+
+SQL> --제약조건과 상관은 없지만, sysdate ?
+SQL> select sysdate from dual;
+
+SYSDATE                                                                                                                                                                                                 
+--------                                                                                                                                                                                                
+20/09/11                                                                                                                                                                                                
+
+SQL> --dual은 또 무언가?
+SQL> select * from dual;
+
+DU                                                                                                                                                                                                      
+--                                                                                                                                                                                                      
+X                                                                                                                                                                                                       
+
+SQL> --그냥 컬럼이 하나짜리 , 데이터가 한개 들어있는 dummy 테이블임
+SQL> --왜 제공해주는가?
+SQL> select sysdate;
+select sysdate
+             *
+ERROR at line 1:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> --from이 없어서 오류
+SQL> --결론 : 날짜를 조회할때는 레코드 1건만 필요하므로, dummy 테이블을 이용하자
+SQL> select '손동진' from emp;
+
+'손동진'                                                                                                                                                                                                
+------------------                                                                                                                                                                                      
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+
+'손동진'                                                                                                                                                                                                
+------------------                                                                                                                                                                                      
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+손동진                                                                                                                                                                                                  
+
+14 rows selected.
+
+SQL> --emp table이 14개라 14번 출력됌
+SQL> select '손동진' from dual;
+
+'손동진'                                                                                                                                                                                                
+------------------                                                                                                                                                                                      
+손동진                                                                                                                                                                                                  
+
+SQL> --만약 나의 db에 dual이 없다면?
+SQL> --직접 만들면 된다
+SQL> create table babo(
+  2  boo varchar(2)
+  3  );
+
+Table created.
+
+SQL> insert into babo(boo) values('X');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> select sysdate from babo;
+
+SYSDATE                                                                                                                                                                                                 
+--------                                                                                                                                                                                                
+20/09/11                                                                                                                                                                                                
+
+SQL> --체크 제약조건 ( 값의 범위에 대한 제한 )
+SQL> --member 테이블에 성별 컬럼을 추가해 보자
+SQL> --기존 이미 생성된 테이블에 대한 변경 ALTER
+SQL> alter table member
+  2  add gender varchar(4) check(gender='남');
+
+Table altered.
+
+SQL> desc member;
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ MEMBER_IDX                                                                                                        NOT NULL NUMBER
+ NAME                                                                                                                       VARCHAR2(20)
+ AGE                                                                                                                        NUMBER
+ REGDATE                                                                                                                    DATE
+ POINT                                                                                                                      NUMBER
+ GENDER                                                                                                                     VARCHAR2(4)
+
+SQL> --실습 '남'이 아닌 다른 데이터를 넣을때 과연 제약조건이 동작하는가?
+SQL> insert into member(member_id,name,gender) values(10,'spider',24,'여');
+insert into member(member_id,name,gender) values(10,'spider',24,'여')
+            *
+ERROR at line 1:
+ORA-00913: too many values 
+
+
+SQL> insert into member(member_idx,name,gender) values(10,'spider',24,'여');
+insert into member(member_idx,name,gender) values(10,'spider',24,'여')
+            *
+ERROR at line 1:
+ORA-00913: too many values 
+
+
+SQL> INSERT INTO MEMBER(MEMBER_IDX, NAME,AGE, GENDER) VALUES(10,'SPIDER',24,'여');
+INSERT INTO MEMBER(MEMBER_IDX, NAME,AGE, GENDER) VALUES(10,'SPIDER',24,'여')
+*
+ERROR at line 1:
+ORA-02290: check constraint (USER0827.SYS_C007004) violated 
+
+
+SQL> 
+SQL> INSERT INTO MEMBER(MEMBER_IDX, NAME,AGE, GENDER) VALUES(10,'SPIDER',24,'남');
+
+1 row created.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE REGDATE       POINT GENDER                                                                                                               
+---------- ---------------------------------------- ---------- -------- ---------- --------                                                                                                             
+         1 batman                                           37 20/09/11        500                                                                                                                      
+        10 SPIDER                                           24 20/09/11        500 남                                                                                                                   
+
+SQL> insert into member(member_idx,name,gender) values(1000,'spider',24,'남');
+insert into member(member_idx,name,gender) values(1000,'spider',24,'남')
+            *
+ERROR at line 1:
+ORA-00913: too many values 
+
+
+SQL> insert into member(member_idx,name,age,gender) values(1000,'spider',24,'남');
+
+1 row created.
+
+SQL> delete from member where member_idx=1000;
+
+1 row deleted.
+
+SQL> select * from member;
+
+MEMBER_IDX NAME                                            AGE REGDATE       POINT GENDER                                                                                                               
+---------- ---------------------------------------- ---------- -------- ---------- --------                                                                                                             
+         1 batman                                           37 20/09/11        500                                                                                                                      
+        10 SPIDER                                           24 20/09/11        500 남                                                                                                                   
+
+SQL> --테이블 만들때 제약조건 잘 적용해야함
+SQL> --생성후에 제약조건 적용해도 그전 결점들은
+SQL> --그대로 존재함
+SQL> 
+SQL> spool off;
