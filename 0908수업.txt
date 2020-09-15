@@ -1,0 +1,504 @@
+SQL> show user
+USER is "USER0827"
+SQL> conn system/1234
+Connected.
+SQL> select username from dba_users;
+
+USERNAME                                                                        
+------------------------------------------------------------                    
+SYS                                                                             
+SYSTEM                                                                          
+ANONYMOUS                                                                       
+USER0827                                                                        
+USER0907                                                                        
+APEX_PUBLIC_USER                                                                
+FLOWS_FILES                                                                     
+APEX_040000                                                                     
+OUTLN                                                                           
+DIP                                                                             
+ORACLE_OCM                                                                      
+
+USERNAME                                                                        
+------------------------------------------------------------                    
+XS$NULL                                                                         
+MDSYS                                                                           
+CTXSYS                                                                          
+DBSNMP                                                                          
+XDB                                                                             
+APPQOSSYS                                                                       
+HR                                                                              
+
+18 rows selected.
+
+SQL> 
+SQL> conn user0907/1234
+Connected.
+SQL> -- sql 문이 아니라 SQLPlus 툴 명령어
+SQL> set line 200
+SQL> select * from emp;
+select * from emp
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> conn user0827/1234
+Connected.
+SQL> show user;
+USER is "USER0827"
+SQL> select * from emp;
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO                                                                                                 
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ----------                                                                                                 
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20                                                                                                 
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30                                                                                                 
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30                                                                                                 
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20                                                                                                 
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30                                                                                                 
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30                                                                                                 
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10                                                                                                 
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20                                                                                                 
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10                                                                                                 
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30                                                                                                 
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20                                                                                                 
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO                                                                                                 
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ----------                                                                                                 
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30                                                                                                 
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20                                                                                                 
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10                                                                                                 
+
+14 rows selected.
+
+SQL> -- 페이지당 보여질 레코드수를 늘리자
+SQL> set pagesize 20
+SQL> /
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO                                                                                                 
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ----------                                                                                                 
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20                                                                                                 
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30                                                                                                 
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30                                                                                                 
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20                                                                                                 
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30                                                                                                 
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30                                                                                                 
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10                                                                                                 
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20                                                                                                 
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10                                                                                                 
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30                                                                                                 
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20                                                                                                 
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30                                                                                                 
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20                                                                                                 
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10                                                                                                 
+
+14 rows selected.
+
+SQL> --급여의 평균을 출력하시오
+SQL> select acg(sal) from emp;
+select acg(sal) from emp
+       *
+ERROR at line 1:
+ORA-00904: "ACG": invalid identifier 
+
+
+SQL> select avg(sal) from emp;
+
+  AVG(SAL)                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+2073.21429                                                                                                                                                                                              
+
+SQL> --평균급여보다 높은 급여를 받은 사원의 이름, 급여를 출력하시오
+SQL> select ename, sal from emp where sal > 2073.21429;
+
+ENAME                       SAL                                                                                                                                                                         
+-------------------- ----------                                                                                                                                                                         
+JONES                      2975                                                                                                                                                                         
+BLAKE                      2850                                                                                                                                                                         
+CLARK                      2450                                                                                                                                                                         
+SCOTT                      3000                                                                                                                                                                         
+KING                       5000                                                                                                                                                                         
+FORD                       3000                                                                                                                                                                         
+
+6 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1* select ename, sal from emp where sal > (select avg(sal) from emp)
+SQL> 
+SQL> /
+
+ENAME                       SAL                                                                                                                                                                         
+-------------------- ----------                                                                                                                                                                         
+JONES                      2975                                                                                                                                                                         
+BLAKE                      2850                                                                                                                                                                         
+CLARK                      2450                                                                                                                                                                         
+SCOTT                      3000                                                                                                                                                                         
+KING                       5000                                                                                                                                                                         
+FORD                       3000                                                                                                                                                                         
+
+6 rows selected.
+
+SQL> --서브쿼리
+SQL> --sub query
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, hiredate from emp 
+  2* where deptno=(select deptno from emp where ename='ALLEN')
+SQL> /
+
+ENAME                HIREDATE                                                                                                                                                                           
+-------------------- --------                                                                                                                                                                           
+ALLEN                81/02/20                                                                                                                                                                           
+WARD                 81/02/22                                                                                                                                                                           
+MARTIN               81/09/28                                                                                                                                                                           
+BLAKE                81/05/01                                                                                                                                                                           
+TURNER               81/09/08                                                                                                                                                                           
+JAMES                81/12/03                                                                                                                                                                           
+
+6 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1* desc emp;
+SQL> 
+SQL> /
+desc emp;
+*
+ERROR at line 1:
+ORA-00900: invalid SQL statement 
+
+
+SQL> desc emp;
+ Name                                                                                                              Null?    Type
+ ----------------------------------------------------------------------------------------------------------------- -------- ----------------------------------------------------------------------------
+ EMPNO                                                                                                             NOT NULL NUMBER
+ ENAME                                                                                                                      VARCHAR2(10)
+ JOB                                                                                                                        VARCHAR2(9)
+ MGR                                                                                                                        NUMBER
+ HIREDATE                                                                                                                   DATE
+ SAL                                                                                                                        NUMBER
+ COMM                                                                                                                       NUMBER
+ DEPTNO                                                                                                                     NUMBER
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, hiredate from emp
+  2* where hiredate > (select hiredate emp where sal=(select max(sal) from emp))
+SQL> /
+where hiredate > (select hiredate emp where sal=(select max(sal) from emp))
+                                      *
+ERROR at line 2:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, hiredate from emp
+  2  where hiredate > (
+  3     select hiredate from emp where sal=( select max(sal) from emp)
+  4* )
+SQL> /
+
+ENAME                HIREDATE                                                                                                                                                                           
+-------------------- --------                                                                                                                                                                           
+SCOTT                87/04/19                                                                                                                                                                           
+ADAMS                87/05/23                                                                                                                                                                           
+JAMES                81/12/03                                                                                                                                                                           
+FORD                 81/12/03                                                                                                                                                                           
+MILLER               82/01/23                                                                                                                                                                           
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select sum(sal) from emp
+  2* where ename like '%T%'
+SQL> /
+
+  SUM(SAL)                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+      6550                                                                                                                                                                                              
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select sum(sal) as 湲됱뿬??from emp
+  2* where ename ilke '%T%'
+SQL> /
+where ename ilke '%T%'
+ *
+ERROR at line 2:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> select sum(sal) as 급여합 from emp
+  2  where ename like '%T%'
+  3  /
+
+    급여합                                                                                                                                                                                              
+----------                                                                                                                                                                                              
+      6550                                                                                                                                                                                              
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select empno, ename, sal from emp
+  2* where sal > (select max(sal) from where deptno=20)
+SQL> /
+where sal > (select max(sal) from where deptno=20)
+                                  *
+ERROR at line 2:
+ORA-00903: invalid table name 
+
+
+SQL> select sum(sal) as 급여합 from emp
+  2  where ename like '%T%'
+  3  select empno, ename, sal from emp
+  4  where sal > (
+  5     select max(sal) from emp where deptno=20
+  6    )
+  7  
+SQL> /
+select empno, ename, sal from emp
+   *
+ERROR at line 3:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> select sum(sal) as 급여합 from emp
+  2  where ename like '%T%'
+  3  select empno, ename, sal from emp
+  4  where sal > (
+  5     select max(sal) from emp where deptno=20
+  6    )
+  7  /
+select empno, ename, sal from emp
+   *
+ERROR at line 3:
+ORA-00933: SQL command not properly ended 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select empno, ename, sal from emp
+  2  where sal > (
+  3     select max(sal) from emp where deptno=20
+  4*   )
+SQL> /
+
+     EMPNO ENAME                       SAL                                                                                                                                                              
+---------- -------------------- ----------                                                                                                                                                              
+      7839 KING                       5000                                                                                                                                                              
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, hiredate from emp
+  2  where deptno = (select deptno from emp where name='ALLEN')
+  3* order by sal desc
+SQL> /
+where deptno = (select deptno from emp where name='ALLEN')
+                                             *
+ERROR at line 2:
+ORA-00904: "NAME": invalid identifier 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, hiredate from emp
+  2  where deptno = (select deptno from emp where ename='ALLEN')
+  3* order by sal desc
+SQL> /
+
+ENAME                HIREDATE                                                                                                                                                                           
+-------------------- --------                                                                                                                                                                           
+BLAKE                81/05/01                                                                                                                                                                           
+ALLEN                81/02/20                                                                                                                                                                           
+TURNER               81/09/08                                                                                                                                                                           
+WARD                 81/02/22                                                                                                                                                                           
+MARTIN               81/09/28                                                                                                                                                                           
+JAMES                81/12/03                                                                                                                                                                           
+
+6 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, hiredate, sal from emp
+  2  where deptno = (select deptno from emp where ename='ALLEN')
+  3* order by sal desc
+SQL> /
+
+ENAME                HIREDATE        SAL                                                                                                                                                                
+-------------------- -------- ----------                                                                                                                                                                
+BLAKE                81/05/01       2850                                                                                                                                                                
+ALLEN                81/02/20       1600                                                                                                                                                                
+TURNER               81/09/08       1500                                                                                                                                                                
+WARD                 81/02/22       1250                                                                                                                                                                
+MARTIN               81/09/28       1250                                                                                                                                                                
+JAMES                81/12/03        950                                                                                                                                                                
+
+6 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, sal from emp
+  2* where sal < (select sal-1000 from emp where ename='SCOTT')
+SQL> /
+
+ENAME                       SAL                                                                                                                                                                         
+-------------------- ----------                                                                                                                                                                         
+SMITH                       800                                                                                                                                                                         
+ALLEN                      1600                                                                                                                                                                         
+WARD                       1250                                                                                                                                                                         
+MARTIN                     1250                                                                                                                                                                         
+TURNER                     1500                                                                                                                                                                         
+ADAMS                      1100                                                                                                                                                                         
+JAMES                       950                                                                                                                                                                         
+MILLER                     1300                                                                                                                                                                         
+
+8 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename to emp where
+  2* ename like 'S%H'
+SQL> /
+select ename to emp where
+             *
+ERROR at line 1:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> select ename from emp where
+  2  ename like 'S%H'/
+  3  /
+ename like 'S%H'/
+                *
+ERROR at line 2:
+ORA-00936: missing expression 
+
+
+SQL> select ename from emp
+  2  where ename like 'S%H'
+  3  
+SQL> /
+
+ENAME                                                                                                                                                                                                   
+--------------------                                                                                                                                                                                    
+SMITH                                                                                                                                                                                                   
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, sal from emp
+  2  where sal > (
+  3  select avg(sal) from emp where deptno=(select deptno from ename='WARD')
+  4* )
+SQL> /
+select avg(sal) from emp where deptno=(select deptno from ename='WARD')
+                                                               *
+ERROR at line 3:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select ename, sal from emp
+  2  where sal > (
+  3  select avg(sal) from emp where deptno=(select deptno from emp where ename='WARD')
+  4* )
+SQL> /
+
+ENAME                       SAL                                                                                                                                                                         
+-------------------- ----------                                                                                                                                                                         
+ALLEN                      1600                                                                                                                                                                         
+JONES                      2975                                                                                                                                                                         
+BLAKE                      2850                                                                                                                                                                         
+CLARK                      2450                                                                                                                                                                         
+SCOTT                      3000                                                                                                                                                                         
+KING                       5000                                                                                                                                                                         
+FORD                       3000                                                                                                                                                                         
+
+7 rows selected.
+
+SQL> select * from emp;
+
+     EMPNO ENAME                JOB                       MGR HIREDATE        SAL       COMM     DEPTNO                                                                                                 
+---------- -------------------- ------------------ ---------- -------- ---------- ---------- ----------                                                                                                 
+      7369 SMITH                CLERK                    7902 80/12/17        800                    20                                                                                                 
+      7499 ALLEN                SALESMAN                 7698 81/02/20       1600        300         30                                                                                                 
+      7521 WARD                 SALESMAN                 7698 81/02/22       1250        500         30                                                                                                 
+      7566 JONES                MANAGER                  7839 81/04/02       2975                    20                                                                                                 
+      7654 MARTIN               SALESMAN                 7698 81/09/28       1250       1400         30                                                                                                 
+      7698 BLAKE                MANAGER                  7839 81/05/01       2850                    30                                                                                                 
+      7782 CLARK                MANAGER                  7839 81/06/09       2450                    10                                                                                                 
+      7788 SCOTT                ANALYST                  7566 87/04/19       3000                    20                                                                                                 
+      7839 KING                 PRESIDENT                     81/11/17       5000                    10                                                                                                 
+      7844 TURNER               SALESMAN                 7698 81/09/08       1500          0         30                                                                                                 
+      7876 ADAMS                CLERK                    7788 87/05/23       1100                    20                                                                                                 
+      7900 JAMES                CLERK                    7698 81/12/03        950                    30                                                                                                 
+      7902 FORD                 ANALYST                  7566 81/12/03       3000                    20                                                                                                 
+      7934 MILLER               CLERK                    7782 82/01/23       1300                    10                                                                                                 
+
+14 rows selected.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select job from emp
+  2* group by job
+SQL> /
+
+JOB                                                                                                                                                                                                     
+------------------                                                                                                                                                                                      
+CLERK                                                                                                                                                                                                   
+SALESMAN                                                                                                                                                                                                
+PRESIDENT                                                                                                                                                                                               
+MANAGER                                                                                                                                                                                                 
+ANALYST                                                                                                                                                                                                 
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select job from emp
+  2* group by job
+SQL> 
+SQL> /
+
+JOB                                                                                                                                                                                                     
+------------------                                                                                                                                                                                      
+CLERK                                                                                                                                                                                                   
+SALESMAN                                                                                                                                                                                                
+PRESIDENT                                                                                                                                                                                               
+MANAGER                                                                                                                                                                                                 
+ANALYST                                                                                                                                                                                                 
+
+SQL> --group by 사용시 주의할 점 group by 에 명시한 컬럼만이 , select 절의 대상이 될 수 있다
+SQL> --예외) 집계함수는 그룹바에 명시하지 않아도 select절에 올수 있다.
+SQL> --이미 그룹화된 결과이므로.
+SQL> ed
+Wrote file afiedt.buf
+
+  1  select job, count(job) from emp
+  2* group by job
+SQL> /
+
+JOB                COUNT(JOB)                                                                                                                                                                           
+------------------ ----------                                                                                                                                                                           
+CLERK                       4                                                                                                                                                                           
+SALESMAN                    4                                                                                                                                                                           
+PRESIDENT                   1                                                                                                                                                                           
+MANAGER                     3                                                                                                                                                                           
+ANALYST                     2                                                                                                                                                                           
+
+SQL> spool off
