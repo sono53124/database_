@@ -1,0 +1,65 @@
+join]
+
+ - inner join : 지금까지 사용해왔던 조인
+		조인대상 테이블에서 공통적인 데이터만 가져온다
+
+
+ - Outer join : 공통적인 데이터가 없는 경우에도 가져올 수 있다...
+
+사용 예시
+select d.deptno, dname, loc,  ename, sal
+from dept d left outer join 			emp e
+ 	   왼쪽은 아우터조인으로 출력	
+on d.deptno=e.deptno
+	where 대신 on 사용
+
+select d.deptno, dname, loc,  ename, sal
+from emp e right outer join 			dept d
+	    오른쪽 무조건 출력
+on d.deptno=e.deptno
+
+-----------------------------------------------------------------------
+group by 예시
+-inner join 이너 조인
+  1  select d.deptno, dname, (count(ename)집계함수는 그룹하지 않아도 그룹화 되어있다.)
+  2  from dept d, emp e
+  3  where d.deptno=e.deptno
+  4* group by d.deptno, dname
+-outer join 아우터 조인
+  1  select d.deptno, dname, (count(ename) as 근무 사원수-- as로 보여질 문장을 지정)
+  2  from dept d left outer join emp e
+  3  on d.deptno=e.deptno
+  4* group by d.deptno, dname
+------------------------------------------------------------------------
+ order by d.deptno asc --- 오름차순
+
+  1  select c.category_id, name, count(product_id)
+  2  from category c left outer join product p
+  3  on c.category_id=p.category_id
+  4  group by c.category_id, name
+  5* order by c.category_id asc
+-------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
